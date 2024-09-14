@@ -30,6 +30,13 @@ export default function PDashboard() {
   const [addressUpdated, setAddressUpdated] = useState(false);
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [cachedSymptoms, setCachedSymptoms] = useState<string[]>([]);
+  const [cachedAddress, setCachedAddress] = useState({
+    street: '',
+    city: '',
+    state: '',
+    zipCode: '',
+  });
 
   const capitalizeWords = (str: string) => {
     return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
@@ -56,6 +63,13 @@ export default function PDashboard() {
           state: '',
           zipCode: '',
         });
+        setCachedSymptoms(userData.symptoms || []);
+        setCachedAddress(userData.address || {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: '',
+        });
       } else {
         console.log("Fetching user info from db");
         // If not in cache, fetch from Firestore
@@ -66,6 +80,13 @@ export default function PDashboard() {
           setUserName(userData.name || '');
           setSelectedSymptoms(userData.symptoms || []);
           setAddress(userData.address || {
+            street: '',
+            city: '',
+            state: '',
+            zipCode: '',
+          });
+          setCachedSymptoms(userData.symptoms || []);
+          setCachedAddress(userData.address || {
             street: '',
             city: '',
             state: '',
@@ -133,6 +154,7 @@ export default function PDashboard() {
         description: "Your symptoms have been updated successfully.",
         variant: "success",
       });
+      setCachedSymptoms(selectedSymptoms);
       setSymptomsUpdated(true);
     } catch (error) {
       console.error("Error saving symptoms:", error);
@@ -154,6 +176,7 @@ export default function PDashboard() {
         description: "Your address has been updated successfully.",
         variant: "success",
       });
+      setCachedAddress(address);
       setAddressUpdated(true);
     } catch (error) {
       console.error("Error updating address:", error);
@@ -176,6 +199,9 @@ export default function PDashboard() {
   };
 
   const isAddressComplete = Object.values(address).every(value => value.trim() !== '');
+
+  const isSymptomsChanged = JSON.stringify(selectedSymptoms) !== JSON.stringify(cachedSymptoms);
+  const isAddressChanged = JSON.stringify(address) !== JSON.stringify(cachedAddress);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -235,10 +261,10 @@ export default function PDashboard() {
                 <CardFooter className="mt-auto">
                   <Button 
                     className="w-full" 
-                    disabled={selectedSymptoms.length === 0 || symptomsUpdated}
+                    disabled={!isSymptomsChanged}
                     onClick={handleSaveSymptoms}
                   >
-                    {symptomsUpdated ? "Symptoms Saved" : "Save Symptoms"}
+                    {isSymptomsChanged ? "Save Symptoms" : "Symptoms Saved"}
                   </Button>
                 </CardFooter>
               </Card>
@@ -276,10 +302,10 @@ export default function PDashboard() {
                 <CardFooter className="mt-auto">
                   <Button 
                     className="w-full" 
-                    disabled={!isAddressComplete || addressUpdated}
+                    disabled={!isAddressComplete || !isAddressChanged}
                     onClick={handleUpdateAddress}
                   >
-                    {addressUpdated ? "Address Updated" : "Update Address"}
+                    {isAddressChanged ? "Update Address" : "Address Updated"}
                   </Button>
                 </CardFooter>
               </Card>
