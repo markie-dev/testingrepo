@@ -44,6 +44,16 @@ export default function SignUp() {
     }
   }, []);
 
+  useEffect(() => {
+    // Disable scrolling when component mounts
+    document.body.style.overflow = 'hidden';
+
+    // Re-enable scrolling when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   if (user) return null;
 
   const togglePasswordVisibility = () => {
@@ -84,7 +94,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen overflow-hidden flex flex-col">
       <nav className="sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -105,7 +115,7 @@ export default function SignUp() {
         </div>
       </nav>
       
-      <main className="flex-grow flex justify-center px-4 sm:px-0">
+      <main className="flex-grow flex justify-center px-4 sm:px-0 overflow-y-auto">
         <Tabs defaultValue="patient" className="w-full max-w-2xl mt-10">
         <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="patient">Patient</TabsTrigger>
