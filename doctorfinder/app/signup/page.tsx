@@ -16,13 +16,13 @@ import { Label } from "@/components/ui/label"
 import { useState, useEffect, useRef } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { app, auth as getFirebaseAuth, db as getFirebaseDb } from '../AuthContext';
+import { auth as getFirebaseAuth, db as getFirebaseDb } from '../AuthContext';
 import { doc, setDoc } from 'firebase/firestore';
-
+import { FirebaseError } from 'firebase/app';
 import Link from 'next/link';
 
 export default function SignUp() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
@@ -44,7 +44,6 @@ export default function SignUp() {
     }
   }, []);
 
-  if (loading) return <div>Loading...</div>;
   if (user) return null;
 
   const togglePasswordVisibility = () => {
@@ -74,9 +73,13 @@ export default function SignUp() {
 
       console.log('User signed up and document created:', user);
       router.push('/pdashboard');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Sign up error:', error);
-      setError(error.message);
+      if (error instanceof FirebaseError) {
+        setError(error.message);
+      } else {
+        setError('An unexpected error occurred');
+      }
     }
   };
 
@@ -182,7 +185,7 @@ export default function SignUp() {
             <CardHeader>
                 <CardTitle>Password</CardTitle>
                 <CardDescription>
-                Change your password here. After saving, you'll be logged out.
+                Change your password here. After saving, you&apos;ll be logged out.
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">

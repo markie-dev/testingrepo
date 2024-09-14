@@ -13,15 +13,15 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { auth as getFirebaseAuth } from '../AuthContext';
 import Link from 'next/link';
+import { FirebaseError } from 'firebase/app';
 
 export default function LogIn() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +34,7 @@ export default function LogIn() {
     }
   }, [user, router]);
 
-  if (loading || user) return null;
+  if (user) return null;
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -50,10 +50,13 @@ export default function LogIn() {
       const auth = getFirebaseAuth();
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/pdashboard');
-    } catch (error: any) {
-      const errorMessage = error.message;
-      console.error('Log in error:', errorMessage);
-      setError(errorMessage);
+    } catch (error: unknown) {
+      console.error('Log in error:', error);
+      if (error instanceof FirebaseError) {
+        setError(error.message);
+      } else {
+        setError('An unexpected error occurred');
+      }
     }
   };
 

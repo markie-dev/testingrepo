@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/hooks/use-toast"
 
-
 export default function PDashboard() {
   const { toast } = useToast();
   const { user } = useAuth();
