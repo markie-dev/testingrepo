@@ -105,7 +105,7 @@ export default function SignUp() {
         </div>
       </nav>
       
-      <main className="flex-grow flex justify-center">
+      <main className="flex-grow flex justify-center px-4 sm:px-0">
         <Tabs defaultValue="patient" className="w-full max-w-2xl mt-10">
         <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="patient">Patient</TabsTrigger>
