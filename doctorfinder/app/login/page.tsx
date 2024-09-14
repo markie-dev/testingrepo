@@ -27,6 +27,8 @@ export default function LogIn() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const [isNavVisible, setIsNavVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
     if (user) {
@@ -60,9 +62,38 @@ export default function LogIn() {
     }
   };
 
+  useEffect(() => {
+    const controlNavbar = () => {
+      if (typeof window !== 'undefined') {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY < lastScrollY) {
+          // Scrolling up
+          setIsNavVisible(true);
+        } else if (currentScrollY > 50 && currentScrollY > lastScrollY) {
+          setIsNavVisible(false);
+        }
+
+        // Update last scroll position
+        setLastScrollY(currentScrollY);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', controlNavbar);
+
+      // Cleanup
+      return () => {
+        window.removeEventListener('scroll', controlNavbar);
+      };
+    }
+  }, [lastScrollY]);
+
   return (
     <div className="h-screen flex flex-col">
-      <nav className="sticky top-0 z-10">
+      <nav className={`sticky top-0 z-10 transition-transform duration-300 bg-white ${
+        isNavVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex-shrink-0 flex items-center">

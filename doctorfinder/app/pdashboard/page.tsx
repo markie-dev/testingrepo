@@ -82,7 +82,7 @@ export default function PDashboard() {
         if (currentScrollY < lastScrollY) {
           // Scrolling up
           setIsNavVisible(true);
-        } else if (currentScrollY > 30 && currentScrollY > lastScrollY) {
+        } else if (currentScrollY > 50 && currentScrollY > lastScrollY) {
           setIsNavVisible(false);
         }
 
