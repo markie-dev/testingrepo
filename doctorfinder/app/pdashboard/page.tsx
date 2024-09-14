@@ -30,7 +30,6 @@ export default function PDashboard() {
   const [addressUpdated, setAddressUpdated] = useState(false);
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const capitalizeWords = (str: string) => {
     return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
@@ -44,8 +43,6 @@ export default function PDashboard() {
         router.push('/login');
         return;
       }
-
-      setIsAuthenticated(true);
 
       // Check if user data is in cache
       const cachedUser = localStorage.getItem('userCache');
