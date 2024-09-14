@@ -36,6 +36,30 @@ export default function LogIn() {
     }
   }, [user, router]);
 
+  useEffect(() => {
+    const controlNavbar = () => {
+      if (typeof window !== 'undefined') {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY < lastScrollY) {
+          setIsNavVisible(true);
+        } else if (currentScrollY > 50 && currentScrollY > lastScrollY) {
+          setIsNavVisible(false);
+        }
+
+        setLastScrollY(currentScrollY);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', controlNavbar);
+
+      return () => {
+        window.removeEventListener('scroll', controlNavbar);
+      };
+    }
+  }, [lastScrollY]);
+
   if (user) return null;
 
   const togglePasswordVisibility = () => {
@@ -61,33 +85,6 @@ export default function LogIn() {
       }
     }
   };
-
-  useEffect(() => {
-    const controlNavbar = () => {
-      if (typeof window !== 'undefined') {
-        const currentScrollY = window.scrollY;
-
-        if (currentScrollY < lastScrollY) {
-          // Scrolling up
-          setIsNavVisible(true);
-        } else if (currentScrollY > 50 && currentScrollY > lastScrollY) {
-          setIsNavVisible(false);
-        }
-
-        // Update last scroll position
-        setLastScrollY(currentScrollY);
-      }
-    };
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', controlNavbar);
-
-      // Cleanup
-      return () => {
-        window.removeEventListener('scroll', controlNavbar);
-      };
-    }
-  }, [lastScrollY]);
 
   return (
     <div className="h-screen flex flex-col">
@@ -132,7 +129,7 @@ export default function LogIn() {
                   <div className="space-y-1">
                     <Input 
                       id="email" 
-                      type="email"  // Add this line
+                      type="email" 
                       placeholder="Email" 
                       spellCheck="false" 
                       value={email}
