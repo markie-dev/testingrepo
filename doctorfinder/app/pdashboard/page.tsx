@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export default function PDashboard() {
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, loading } = useAuth(); // Assuming useAuth provides a loading state
   const router = useRouter();
   const [userName, setUserName] = useState('');
   const [isReady, setIsReady] = useState(false);
@@ -38,6 +38,8 @@ export default function PDashboard() {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      if (loading) return;
+
       if (!user) {
         router.push('/login');
         return;
@@ -80,7 +82,7 @@ export default function PDashboard() {
     };
 
     fetchUserData();
-  }, [user, router]);
+  }, [user, loading, router]);
 
   useEffect(() => {
     const controlNavbar = () => {
@@ -109,12 +111,12 @@ export default function PDashboard() {
     }
   }, [lastScrollY]);
 
-  if (!isAuthenticated) {
+  if (loading || (!isReady && user)) {
     return <LoadingSkeleton />;
   }
 
-  if (!isReady) {
-    return <LoadingSkeleton />;
+  if (!user) {
+    return null; // Return null to avoid any flash of content
   }
 
   const handleLogout = () => {
