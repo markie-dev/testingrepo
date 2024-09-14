@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Input } from "@/components/ui/input"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/hooks/use-toast"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function PDashboard() {
   const { toast } = useToast();
@@ -29,6 +30,7 @@ export default function PDashboard() {
   const [addressUpdated, setAddressUpdated] = useState(false);
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const capitalizeWords = (str: string) => {
     return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
@@ -40,6 +42,8 @@ export default function PDashboard() {
         router.push('/login');
         return;
       }
+
+      setIsAuthenticated(true);
 
       // Check if user data is in cache
       const cachedUser = localStorage.getItem('userCache');
@@ -105,7 +109,13 @@ export default function PDashboard() {
     }
   }, [lastScrollY]);
 
-  if (!isReady) return null;
+  if (!isAuthenticated) {
+    return <LoadingSkeleton />;
+  }
+
+  if (!isReady) {
+    return <LoadingSkeleton />;
+  }
 
   const handleLogout = () => {
     clearUserCache(); // Clear the cache when logging out
@@ -279,6 +289,18 @@ export default function PDashboard() {
         </div>
       </main>
       <Toaster />
+    </div>
+  );
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="min-h-screen flex flex-col p-4">
+      <Skeleton className="h-12 w-48 mb-8" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Skeleton className="h-96 w-full" />
+        <Skeleton className="h-96 w-full" />
+      </div>
     </div>
   );
 }
