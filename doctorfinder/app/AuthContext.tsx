@@ -6,38 +6,38 @@ import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-};
-
-const app: FirebaseApp = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+let app: FirebaseApp;
 let auth: Auth;
 let db: Firestore;
 
+const initializeFirebase = async () => {
+  if (!app) {
+    const response = await fetch('/api/firebase-config');
+    const firebaseConfig = await response.json();
+    
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+  }
+};
+
 const getFirebaseAuth = () => {
   if (!auth) {
-    auth = getAuth(app);
+    throw new Error("Firebase Auth hasn't been initialized. Call initializeFirebase() first.");
   }
   return auth;
 };
 
 const getFirebaseDb = () => {
   if (!db) {
-    db = getFirestore(app);
+    throw new Error("Firestore hasn't been initialized. Call initializeFirebase() first.");
   }
   return db;
 };
 
-export { app, getFirebaseAuth as auth, getFirebaseDb as db };
+export { initializeFirebase, getFirebaseAuth as auth, getFirebaseDb as db };
 
 export const clearUserCache = () => {
-  // This function will be called when logging out
   localStorage.removeItem('userCache');
 };
 
@@ -53,13 +53,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const auth = getFirebaseAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
+    const initAuth = async () => {
+      await initializeFirebase();
+      const auth = getFirebaseAuth();
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        setUser(user);
+        setLoading(false);
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    };
+
+    initAuth();
   }, []);
 
   return (
