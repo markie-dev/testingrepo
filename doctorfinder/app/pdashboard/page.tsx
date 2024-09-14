@@ -30,6 +30,10 @@ export default function PDashboard() {
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
+  const capitalizeWords = (str: string) => {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user) {
@@ -188,7 +192,7 @@ export default function PDashboard() {
           <div className="w-full py-7">
             <h1 className="text-3xl font-bold flex flex-col sm:flex-row sm:items-center">
               <span className="mr-2">Welcome,</span>
-              <span>{userName}</span>
+              <span>{capitalizeWords(userName)}</span>
             </h1>
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card className="flex flex-col h-full">

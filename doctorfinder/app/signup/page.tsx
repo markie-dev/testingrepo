@@ -153,7 +153,7 @@ export default function SignUp() {
                     <Input 
                       id="name" 
                       ref={nameInputRef} 
-                      placeholder="Name" 
+                      placeholder="Full Name" 
                       spellCheck="false" 
                       value={name}
                       onChange={(e) => setName(e.target.value)}
