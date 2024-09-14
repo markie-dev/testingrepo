@@ -44,16 +44,6 @@ export default function SignUp() {
     }
   }, []);
 
-  useEffect(() => {
-    // Disable scrolling when component mounts
-    document.body.style.overflow = 'hidden';
-
-    // Re-enable scrolling when component unmounts
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, []);
-
   if (user) return null;
 
   const togglePasswordVisibility = () => {
@@ -153,6 +143,7 @@ export default function SignUp() {
                   <div className="space-y-1">
                     <Input 
                       id="email" 
+                      type="email"  // Add this line
                       placeholder="Email" 
                       spellCheck="false" 
                       value={email}
