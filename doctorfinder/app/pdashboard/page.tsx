@@ -26,8 +26,6 @@ export default function PDashboard() {
     state: '',
     zipCode: '',
   });
-  const [symptomsUpdated, setSymptomsUpdated] = useState(false);
-  const [addressUpdated, setAddressUpdated] = useState(false);
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [cachedSymptoms, setCachedSymptoms] = useState<string[]>([]);
@@ -155,7 +153,6 @@ export default function PDashboard() {
         variant: "success",
       });
       setCachedSymptoms(selectedSymptoms);
-      setSymptomsUpdated(true);
     } catch (error) {
       console.error("Error saving symptoms:", error);
       toast({
@@ -177,7 +174,6 @@ export default function PDashboard() {
         variant: "success",
       });
       setCachedAddress(address);
-      setAddressUpdated(true);
     } catch (error) {
       console.error("Error updating address:", error);
       toast({
@@ -190,12 +186,10 @@ export default function PDashboard() {
 
   const handleSymptomToggle = (value: string[]) => {
     setSelectedSymptoms(value);
-    setSymptomsUpdated(false);
   };
 
   const handleAddressChange = (field: string, value: string) => {
     setAddress(prev => ({ ...prev, [field]: value }));
-    setAddressUpdated(false);
   };
 
   const isAddressComplete = Object.values(address).every(value => value.trim() !== '');
