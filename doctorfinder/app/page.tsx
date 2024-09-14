@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuth, auth as getFirebaseAuth, clearUserCache } from './AuthContext';
+
 export default function Home() {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
 
   const handleLogout = () => {
     clearUserCache(); // Clear the cache
@@ -22,9 +23,7 @@ export default function Home() {
               </Link>
             </div>
             <div className="space-x-4">
-              {loading ? (
-                <div>Loading...</div>
-              ) : user ? (
+              {user ? (
                 <>
                   <Link 
                     href="/pdashboard" 
