@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from './AuthContext';
+import { GeistSans } from 'geist/font/sans';
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-sans">
+      <body className={GeistSans.className}>
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
