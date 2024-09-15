@@ -314,11 +314,13 @@ export default function PDashboard() {
 
 function LoadingSkeleton() {
   return (
-    <div className="min-h-screen flex flex-col p-4">
-      <Skeleton className="h-12 w-48 mb-8" />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Skeleton className="h-96 w-full" />
-        <Skeleton className="h-96 w-full" />
+    <div className="min-h-screen flex flex-col">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-7">
+        <Skeleton className="h-12 w-48 mb-8" /> {/* Welcome text skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Skeleton className="h-[500px] w-full" />
+          <Skeleton className="h-[500px] w-full" />
+        </div>
       </div>
     </div>
   );
